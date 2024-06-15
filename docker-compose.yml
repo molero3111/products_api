@@ -1,0 +1,32 @@
+services:
+  products-mongo-db:
+    image: mongo:latest
+    container_name: products-mongo-db
+    volumes:
+      - ./dbdata:/data/db
+    networks:
+    - products_api_network
+
+  products-node-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: products-node-api
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    depends_on:
+      - products-mongo-db
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+    - products_api_network
+
+networks: 
+  products_api_network:  # Configuration for the "products_api_network" network.
+    external: true
+
+volumes:
+  dbdata:

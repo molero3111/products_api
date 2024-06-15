@@ -1,0 +1,23 @@
+{
+  "name": "products_api",
+  "version": "1.0.0",
+  "description": "Products CRUD",
+  "main": "index.js",
+  "scripts": {
+    "devServer": "nodemon server.js"
+  },
+  "keywords": [
+    "CRUD",
+    "Products"
+  ],
+  "author": "Emmanuel Molero",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongoose": "^8.4.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.3"
+  }
+}
