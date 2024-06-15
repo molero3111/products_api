@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/product');
+const formatProductObjectData = require('../utils/formatter');
+const getProduct = require('../middlewares/product');
 
 // List all products
 router.get('/', async (request, response)=>{
@@ -17,27 +19,16 @@ router.get('/', async (request, response)=>{
 });
 
 // Get details of a product
-router.get('/:id', (request, response)=>{
-    response.json({
-        "message":"product id",
-        "id": request.params.id
-    });
+router.get('/:id', getProduct, (request, response)=>{
+    response.json(formatProductObjectData(response.product));
 });
 
 // Create a product
 router.post('/', async (request, response)=>{
-    const product = new Product({
-        name: request.body.name,
-        stock: request.body.stock,
-        description: request.body.description,
-        price: request.body.price,
-        imageUrl: request.body.imageUrl,
-        category: request.body.category
-    });
+    const product = new Product(formatProductObjectData(request.body));
 
     try {
         await product.save();
-        console.log('saving');
         response.status(201).json({
             message: 'Product created successfully',
             product
@@ -51,13 +42,41 @@ router.post('/', async (request, response)=>{
 });
 
 // Update one or more attributes of a product
-router.patch('/:id', (req, res)=>{
-    
-});
+router.patch('/:id', getProduct, async (request, response) => {
+    const product = response.product;
+
+    const fieldsToUpdate = Object.keys(request.body);
+    for (const field of fieldsToUpdate) {
+        product[field] = request.body[field];
+    }
+  
+    try {
+      await product.save();
+      response.json({
+        message: 'Product updated successfully',
+        product
+      });
+    } catch (error) {
+      response.status(500).json({ message: error.message });
+    }
+  });
+  
 
 // Delete a product
-router.delete('/:id', (req, res)=>{
-    
+router.delete('/:id', getProduct, async(request, response)=>{
+    try {
+        const product = formatProductObjectData(response.product);
+        await response.product.deleteOne();
+        response.json({
+            message: 'Product deleted successfully',
+            product
+        });
+    }
+    catch (error){
+        response.status(500).json({
+            message: error.message
+        });
+    };
 });
 
 

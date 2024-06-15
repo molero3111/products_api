@@ -4,9 +4,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-mongoose.connect(process.env.DB_URL, {
-  useUnifiedTopology: true,
-});
+mongoose.connect(process.env.DB_URL);
 
 const db = mongoose.connection;
 db.on('error', (error) => console.error('DB connection failed:', error));
