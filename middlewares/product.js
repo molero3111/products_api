@@ -1,4 +1,4 @@
-const Product = require('../models/product');
+const Product = require('../models/Product');
 
 const getProduct = async(request, response, next) => {
     let product = null;
@@ -11,7 +11,6 @@ const getProduct = async(request, response, next) => {
         }
     } catch (error){
         return response.status(500).json({
-            test:'test',
             message: error.message
         });
     }

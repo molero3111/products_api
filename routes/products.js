@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('../models/product');
+const Product = require('../models/Product');
 const formatProductObjectData = require('../utils/formatter');
 const { authenticateRequest, verifyAdminRole } = require('../middlewares/auth');
 const getProduct = require('../middlewares/product');
