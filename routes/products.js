@@ -2,7 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/product');
 const formatProductObjectData = require('../utils/formatter');
+const { authenticateRequest, verifyAdminRole } = require('../middlewares/auth');
 const getProduct = require('../middlewares/product');
+
+router.use(authenticateRequest);
 
 // List all products
 router.get('/', async (request, response)=>{
@@ -63,7 +66,7 @@ router.patch('/:id', getProduct, async (request, response) => {
   
 
 // Delete a product
-router.delete('/:id', getProduct, async(request, response)=>{
+router.delete('/:id', [verifyAdminRole, getProduct], async(request, response)=>{
     try {
         const product = formatProductObjectData(response.product);
         await response.product.deleteOne();

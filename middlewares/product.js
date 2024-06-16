@@ -19,4 +19,8 @@ const getProduct = async(request, response, next) => {
     return next();
 };
 
-module.exports = getProduct; // Export the function
+module.exports = getProduct;
+
+const authenticateRequest = ()=>{
+    passport.authenticate('jwt', { session: false });
+};
