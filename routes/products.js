@@ -7,19 +7,41 @@ const getProduct = require('../middlewares/product');
 
 router.use(authenticateRequest);
 
-// List all products
-router.get('/', async (request, response)=>{
+// // List all products
+// router.get('/', async (request, response)=>{
+//     try {
+//         response.json({
+//             products: await Product.find()
+//         });
+//     }
+//     catch (error){
+//         response.status(500).json({
+//             message: error.message
+//         });
+//     };
+// });
+
+router.get('/', async (req, response) => {
+    const { page = 1, limit = 50 } = req.query; // Default values for page and limit
+  
     try {
-        response.json({
-            products: await Product.find()
-        });
+      const skip = (page - 1) * limit; // Calculate skip value for pagination
+      const products = await Product.find({}, null, { sort: { createdAt: -1 }, skip, limit }); // Sort by createdAt desc, apply skip and limit
+      const totalProducts = await Product.countDocuments(); // Get total product count
+  
+      const totalPages = Math.ceil(totalProducts / limit); // Calculate total pages
+  
+      response.json({
+        products,
+        totalPages,
+        currentPage: page,
+      });
+    } catch (error) {
+      response.status(500).json({
+        message: error.message,
+      });
     }
-    catch (error){
-        response.status(500).json({
-            message: error.message
-        });
-    };
-});
+  });
 
 // Get details of a product
 router.get('/:id', getProduct, (request, response)=>{
